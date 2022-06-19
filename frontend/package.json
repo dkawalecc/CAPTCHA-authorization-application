@@ -1,0 +1,19 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "CAPTCHA frontend",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dkawalecc/CAPTCHA-authorization-application.git"
+  },
+  "author": "Dominik Kawalec, Kamil Wrześniak",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dkawalecc/CAPTCHA-authorization-application/issues"
+  },
+  "homepage": "https://github.com/dkawalecc/CAPTCHA-authorization-application#readme"
+}
