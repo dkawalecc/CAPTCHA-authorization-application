@@ -5,5 +5,7 @@
 ```
 cd frontend
 npm i
-live-server public
+live-server .
 ```
+
+Select public folder
