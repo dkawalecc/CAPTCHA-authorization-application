@@ -1,24 +1,25 @@
 {
-  "name": "frontend",
-  "version": "1.0.0",
-  "description": "CAPTCHA frontend",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dkawalecc/CAPTCHA-authorization-application.git"
-  },
-  "author": "Dominik Kawalec, Kamil Wrześniak",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/dkawalecc/CAPTCHA-authorization-application/issues"
-  },
-  "homepage": "https://github.com/dkawalecc/CAPTCHA-authorization-application#readme",
-  "dependencies": {
-    "express": "^4.18.1",
-    "https": "^1.0.0",
-    "path": "^0.12.7"
-  }
+    "name": "frontend",
+    "version": "1.0.0",
+    "description": "CAPTCHA frontend",
+    "main": "app.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/dkawalecc/CAPTCHA-authorization-application.git"
+    },
+    "author": "Dominik Kawalec, Kamil Wrześniak",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/dkawalecc/CAPTCHA-authorization-application/issues"
+    },
+    "homepage": "https://github.com/dkawalecc/CAPTCHA-authorization-application#readme",
+    "dependencies": {
+        "express": "^4.18.1",
+        "https": "^1.0.0",
+        "live-server": "^1.2.2",
+        "path": "^0.12.7"
+    }
 }

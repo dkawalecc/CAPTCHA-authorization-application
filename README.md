@@ -4,5 +4,6 @@
 
 ```
 cd frontend
-live-server .
+npm i
+live-server public
 ```
