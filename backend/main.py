@@ -53,3 +53,4 @@ if __name__ == '__main__':
     testcase = load_testcase('temp')
     result = modify(testcase)
     play(result)
+    result.export("result.mp3", format="mp3")
