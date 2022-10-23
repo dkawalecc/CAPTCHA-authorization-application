@@ -1,17 +1,29 @@
+import utils from "./utils";
+
 const guessGrid = document.querySelector(".grid");
 const alertContainer = document.querySelector("[data-alert-container]");
 const verifyBtn = document.querySelector(".verify-btn");
 const playBtn = document.querySelector(".play-btn");
+const generateBtn = document.querySelector(".generate-btn");
 
 const WORD_LENGTH = 5;
 
 function startInteraction() {
     document.addEventListener("keydown", handleKeyPress);
     verifyBtn.addEventListener("click", submitGuess);
-    playBtn.addEventListener("click", () => {
-        var audio = new Audio("../temp/result.mp3");
-        audio.play();
-    });
+    playBtn.addEventListener("click", saveFile);
+    generateBtn.addEventListener("click", generateHandler);
+}
+
+function generateHandler() {
+    // playBtn.removeEventListener("click", saveFile);
+    // playBtn.addEventListener("click", saveFile)
+    // window.indexedDB
+}
+
+function saveFile() {
+    var audio = new Audio("../temp/result.mp3");
+    audio.play();
 }
 
 function handleKeyPress(e) {
@@ -111,6 +123,8 @@ function checkTarget(guess, tiles, target) {
         return;
     } else {
         showAlert("Incorrect, generate new code or try again.", 4000);
+        shakeTiles(tiles);
+
         for (let tile of tiles) {
             tile.textContent = "_";
             delete tile.dataset.state;
