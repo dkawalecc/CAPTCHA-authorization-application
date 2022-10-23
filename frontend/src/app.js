@@ -111,6 +111,11 @@ function checkTarget(guess, tiles, target) {
         return;
     } else {
         showAlert("Incorrect, generate new code or try again.", 4000);
+        for (let tile of tiles) {
+            tile.textContent = "_";
+            delete tile.dataset.state;
+            delete tile.dataset.letter;
+        }
     }
 }
 
