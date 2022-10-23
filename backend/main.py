@@ -50,6 +50,7 @@ if __name__ == '__main__':
     testcase = generate_testcase(TESTCASE_SIZE)
     print(testcase)
     save_testcase('temp', testcase)
+    print(listdir('.'))
     testcase = load_testcase('temp')
     result = modify(testcase)
     play(result)
