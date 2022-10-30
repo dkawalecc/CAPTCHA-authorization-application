@@ -1,5 +1,3 @@
-import utils from "./utils";
-
 const guessGrid = document.querySelector(".grid");
 const alertContainer = document.querySelector("[data-alert-container]");
 const verifyBtn = document.querySelector(".verify-btn");
@@ -18,7 +16,16 @@ function startInteraction() {
 function generateHandler() {
     // playBtn.removeEventListener("click", saveFile);
     // playBtn.addEventListener("click", saveFile)
-    // window.indexedDB
+
+    let db;
+    const request = indexedDB.open("MyTestDatabase", 3);
+    request.onerror = (event) => {
+        console.error("Why didn't you allow my web app to use IndexedDB?!");
+    };
+    request.onsuccess = (event) => {
+        db = event.target.result;
+        console.log(db);
+    };
 }
 
 function saveFile() {

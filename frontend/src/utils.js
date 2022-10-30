@@ -35,8 +35,17 @@ function _download(body, filename, extension) {
     }
 }
 
-const utils = {
-    download,
-};
-
-export default utils;
+function blobToArrayBuffer(blob) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.addEventListener('loadend', (e) => {
+        resolve(reader.result);
+      });
+      reader.addEventListener('error', reject);
+      reader.readAsArrayBuffer(blob);
+    });
+  }
+  
+  function arrayBufferToBlob(buffer, type) {
+    return new Blob([buffer], {type: type});
+  }
