@@ -3,7 +3,7 @@ import librosa
 from gtts import gTTS
 from pydub import AudioSegment
 from pydub.playback import play
-from os import listdir
+from os import listdir, path
 from os.path import isfile, join
 import random
 from pydub.generators import WhiteNoise
@@ -12,17 +12,19 @@ from pydub.generators import Sine
 TESTCASE_SIZE = 5
 SYMBOLS = string.ascii_uppercase + string.digits
 
+
 def generate_testcase(n):
     return [random.choice(SYMBOLS) for _ in range(n)]
 
 
 def numpy_to_audio_segment(channel, ts):
     return AudioSegment(
-    channel.tobytes(),
-    frame_rate=ts,
-    sample_width=channel.dtype.itemsize,
-    channels=1
-)
+        channel.tobytes(),
+        frame_rate=ts,
+        sample_width=channel.dtype.itemsize,
+        channels=1
+    )
+
 
 def save_testcase(path, test_case):
     for i, ch in enumerate(test_case):
@@ -57,8 +59,11 @@ def modify(test_case):
 if __name__ == '__main__':
     x = 2
     testcase = generate_testcase(TESTCASE_SIZE)
+    # dirname = path.dirname(__file__)
+    # filename = path.join(dirname, 'temp')
+    # res = path.join(dirname, 'result.mp3')
     print(testcase)
-    save_testcase('temp', testcase)
-    testcase = load_testcase('temp')
+    save_testcase(filename, testcase)
+    testcase = load_testcase(filename)
     result = modify(testcase)
-    result.export("result.mp3", format="mp3")
+    result.export(res, format="mp3")
