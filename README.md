@@ -3,9 +3,7 @@
 ### frontend
 
 ```
-cd frontend
+cd frontend/app
 npm i
-live-server .
+npm start
 ```
-
-Select public folder
