@@ -31,6 +31,7 @@ export const Recorder = ({ fileName }) => {
           console.log(json);
           // window.location = "/resource";
         }
+        setState({ ...state, recording: false });
       });
   };
 
