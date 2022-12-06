@@ -6,6 +6,8 @@
 .pnp.js
 node_modules/
 *.pdf
+/.vscode/
+*.mp3
 
 # testing
 /coverage

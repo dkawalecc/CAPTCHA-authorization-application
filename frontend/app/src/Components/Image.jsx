@@ -19,7 +19,7 @@ function Image(props) {
 
     //Our draw come here
     draw(context);
-  }, [draw]);
+  });
 
   return <canvas ref={canvasRef} {...props} />;
 
