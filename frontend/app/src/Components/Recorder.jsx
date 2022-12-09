@@ -30,6 +30,7 @@ export const Recorder = ({ fileName }) => {
         if (json.success) {
           console.log(json);
           // window.location = "/resource";
+          // navigator.mediaDevices.
         }
         setState({ ...state, recording: false });
       });

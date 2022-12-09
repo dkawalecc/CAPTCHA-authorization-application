@@ -1,17 +1,27 @@
 import React from "react";
 
 function Tiles({ words, wordLength }) {
-  const tiles = [];
-  for (let i = 0; i < wordLength; i++) {
-    tiles.push(
-      <div key={i} className="tile">
-        _
-      </div>
-    );
-  }
-  return;
-  {
-  }
+    return words.split(" ").map((word, i) => {
+        return (
+            <div
+                key={i}
+                className="tiles"
+                style={{ "--wordLength": word.length }}
+            >
+                {word.split("").map((_, j) => {
+                    return (
+                        <div
+                            key={`${word}_${j}`}
+                            className="tile"
+                            // data-state="active"
+                        >
+                            _
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    });
 }
 
 export default Tiles;
