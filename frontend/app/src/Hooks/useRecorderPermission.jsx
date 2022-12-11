@@ -15,7 +15,7 @@ export const useRecorderPermission = () => {
                 echoCancellation: true,
             })
             .then((stream) => {
-                console.log(tracks);
+                // console.log(tracks);
                 setTracks(stream.getAudioTracks());
                 let recorder = new RecordRTCPromisesHandler(stream, {
                     type: "audio",

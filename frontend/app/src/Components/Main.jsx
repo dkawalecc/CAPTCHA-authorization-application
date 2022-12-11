@@ -14,20 +14,21 @@ function Main() {
     const [state, setState] = useState({
         sound: "",
         ctx: new AudioContext(),
-        // TODO target and wordLength changes to default after setState and 2 renders
-        target: "jeden dwa trzy",
-        wordLength: 12,
         playDisable: false,
         displayImage: false,
         loadingState: false,
     });
-    // console.log("render");
-    // console.log(state.target);
+
+    const [captcha, setCaptcha] = useState({
+        target: "dwa",
+        wordLength: "3",
+    });
 
     const toggle = () => {
         if (typeof state.sound == "string") {
-            console.log(typeof state.sound);
-            window.alert("No Captcha sound to play");
+            window.alert(
+                "No Captcha sound to play! Try to generate a new one."
+            );
             return;
         }
 
@@ -56,15 +57,24 @@ function Main() {
                 "Origin, X-Requested-With, Content-Type, Accept"
             );
 
-            const res = await fetch(`${serverUrl}/api/get_words?words=${rand}`);
+            const res = await fetch(
+                `${serverUrl}/api/get_words?words=${rand}`
+            ).catch((e) => {
+                // console.log(e);
+                return;
+            });
+            if (!res) {
+                return;
+            }
             await res.text().then((data) => {
-                setState({
-                    ...state,
+                setCaptcha({
+                    ...captcha,
                     target: data,
                     wordLength: data.replace(/\s+/g, "").length,
                 });
                 console.log(data);
             });
+            return true;
         } catch (e) {
             console.error(e);
         }
@@ -72,10 +82,16 @@ function Main() {
 
     async function getFile() {
         try {
+            // debugger;
             setState({ ...state, ctx: new AudioContext() });
 
-            await getWord(3);
+            let status = await getWord(3).catch((e) => {
+                console.log(e);
+            });
 
+            if (!status) {
+                return;
+            }
             let headers = new Headers();
             headers.append(
                 "Access-Control-Allow-Origin",
@@ -98,7 +114,7 @@ function Main() {
                     audio = decodedAudio;
                 });
 
-            setState({ ...state, sound: audio });
+            setState({ sound: audio });
             // console.log(new Blob([response.arrayBuffer()]));
             // let a = URL.createObjectURL(new Blob([response.arrayBuffer()]));
         } catch (e) {
@@ -107,17 +123,19 @@ function Main() {
     }
 
     useEffect(() => {
-        // getFile();
+        getFile();
+    }, []);
+    useEffect(() => {
         const guessGrid = document.querySelector(".grid");
         const alertContainer = document.querySelector("[data-alert-container]");
         const verifyBtn = document.querySelector(".verify-btn");
 
-        function startInteraction() {
-            document.removeEventListener("keydown", handleKeyPress);
-            verifyBtn.removeEventListener("click", submitGuess);
-            document.addEventListener("keydown", handleKeyPress);
-            verifyBtn.addEventListener("click", submitGuess);
-        }
+        // function startInteraction() {
+        document.removeEventListener("keydown", handleKeyPress);
+        verifyBtn.removeEventListener("click", submitGuess);
+        document.addEventListener("keydown", handleKeyPress);
+        verifyBtn.addEventListener("click", submitGuess);
+        // }
 
         function handleKeyPress(e) {
             if (e.key === "Enter") {
@@ -148,6 +166,8 @@ function Main() {
             const nextTile = guessGrid.querySelector(
                 ".tiles > :not([data-letter])"
             );
+            if (!nextTile) return;
+
             nextTile.dataset.letter = key.toLowerCase();
             nextTile.textContent = key;
             nextTile.dataset.state = "active";
@@ -169,7 +189,7 @@ function Main() {
                 return word + tile.dataset.letter;
             }, "");
 
-            console.log(guess);
+            // console.log(guess);
             checkTarget(guess, activeTiles);
         }
 
@@ -210,7 +230,12 @@ function Main() {
         }
 
         function checkTarget(guess, tiles) {
-            if (guess === state.target.replace(/\s+/g, "").toLowerCase()) {
+            console.log(guess);
+            console.log(captcha.target.replace(/\s+/g, "").toLowerCase());
+            console.log(
+                guess === captcha.target.replace(/\s+/g, "").toLowerCase()
+            );
+            if (guess === captcha.target.replace(/\s+/g, "").toLowerCase()) {
                 showAlert("Correct!", 4000);
                 setTimeout(() => {
                     // problem with useNavigate
@@ -231,9 +256,9 @@ function Main() {
                 }
             }
         }
-        stopInteraction();
-        startInteraction();
-    }, []);
+        // stopInteraction();
+        // startInteraction();
+    }, [captcha.target]);
 
     return (
         <div>
@@ -246,14 +271,14 @@ function Main() {
                         </Spinner>
                     ) : (
                         <Tiles
-                            words={state.target}
-                            wordLength={state.wordLength}
+                            words={captcha.target}
+                            wordLength={captcha.wordLength}
                         />
                     )}
                 </div>
-                {state.displayImage ? <Image target={state.target} /> : ""}
+                {state.displayImage ? <Image target={captcha.target} /> : ""}
                 {state.wordLength}
-                {state.target}
+                {state.captcha}
                 <div className="btns">
                     <Button
                         onClick={() => {
