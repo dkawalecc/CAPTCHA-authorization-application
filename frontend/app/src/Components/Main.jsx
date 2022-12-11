@@ -60,7 +60,6 @@ function Main() {
             const res = await fetch(
                 `${serverUrl}/api/get_words?words=${rand}`
             ).catch((e) => {
-                // console.log(e);
                 return;
             });
             if (!res) {
@@ -87,6 +86,7 @@ function Main() {
 
             let status = await getWord(3).catch((e) => {
                 console.log(e);
+                // return;
             });
 
             if (!status) {
@@ -131,8 +131,7 @@ function Main() {
         const verifyBtn = document.querySelector(".verify-btn");
 
         // function startInteraction() {
-        document.removeEventListener("keydown", handleKeyPress);
-        verifyBtn.removeEventListener("click", submitGuess);
+
         document.addEventListener("keydown", handleKeyPress);
         verifyBtn.addEventListener("click", submitGuess);
         // }
@@ -152,11 +151,6 @@ function Main() {
                 pressKey(e.key);
                 return;
             }
-        }
-
-        function stopInteraction() {
-            window.removeEventListener("keydown", handleKeyPress);
-            window.removeEventListener("click", submitGuess);
         }
 
         function pressKey(key) {
@@ -230,11 +224,6 @@ function Main() {
         }
 
         function checkTarget(guess, tiles) {
-            console.log(guess);
-            console.log(captcha.target.replace(/\s+/g, "").toLowerCase());
-            console.log(
-                guess === captcha.target.replace(/\s+/g, "").toLowerCase()
-            );
             if (guess === captcha.target.replace(/\s+/g, "").toLowerCase()) {
                 showAlert("Correct!", 4000);
                 setTimeout(() => {
@@ -243,8 +232,10 @@ function Main() {
                     window.location = "/resource";
                 }, 2000);
 
-                stopInteraction();
-                return;
+                return () => {
+                    document.removeEventListener("keydown", handleKeyPress);
+                    verifyBtn.removeEventListener("click", submitGuess);
+                };
             } else {
                 showAlert("Incorrect, generate new code or try again.", 4000);
                 shakeTiles(tiles);
@@ -256,8 +247,11 @@ function Main() {
                 }
             }
         }
-        // stopInteraction();
-        // startInteraction();
+
+        return () => {
+            document.removeEventListener("keydown", handleKeyPress);
+            verifyBtn.removeEventListener("click", submitGuess);
+        };
     }, [captcha.target]);
 
     return (
