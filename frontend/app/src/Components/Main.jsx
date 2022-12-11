@@ -20,8 +20,8 @@ function Main() {
     });
 
     const [captcha, setCaptcha] = useState({
-        target: "dwa",
-        wordLength: "3",
+        target: "",
+        wordLength: "0",
     });
 
     const toggle = () => {
@@ -113,8 +113,11 @@ function Main() {
                     // new (window.AudioContext || window.webkitAudioContext)()
                     audio = decodedAudio;
                 });
+            // .catch((e) => {
+            //     console.log(e);
+            // });
 
-            setState({ sound: audio });
+            setState({ ...state, sound: audio });
             // console.log(new Blob([response.arrayBuffer()]));
             // let a = URL.createObjectURL(new Blob([response.arrayBuffer()]));
         } catch (e) {
@@ -259,20 +262,12 @@ function Main() {
             <AlertContainer />
             <main>
                 <div className="grid">
-                    {state.loadingState ? (
-                        <Spinner animation="border" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </Spinner>
-                    ) : (
-                        <Tiles
-                            words={captcha.target}
-                            wordLength={captcha.wordLength}
-                        />
-                    )}
+                    <Tiles
+                        words={captcha.target}
+                        wordLength={captcha.wordLength}
+                    />
                 </div>
-                {state.displayImage ? <Image target={captcha.target} /> : ""}
-                {state.wordLength}
-                {state.captcha}
+
                 <div className="btns">
                     <Button
                         onClick={() => {
@@ -306,6 +301,15 @@ function Main() {
                     <Button value="Record" classname="record-btn" />
                 </div>
                 <Recorder fileName="validate" />
+                {state.loadingState ? (
+                    <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                ) : state.displayImage ? (
+                    <Image target={captcha.target} />
+                ) : (
+                    ""
+                )}
             </main>
         </div>
     );

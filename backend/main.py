@@ -12,6 +12,8 @@ from flask import Flask, request, render_template, jsonify, send_file, make_resp
 from flask_cors import CORS
 import requests
 import io
+import generate_testcase as gen_test
+import recognize_text_from_speech as rtfs
 
 app = Flask(__name__)
 # CORS(app, resources='/asd/sendfile')
@@ -23,10 +25,11 @@ SYMBOLS = string.ascii_uppercase + string.digits
 
 @app.route('/api/get_words', methods=['GET'])
 def get_words():
-    print("get_words")
+    # print("get_words")
     words = request.args.get('words', default=1, type=int)  # arg for generate()
-    t = generate(words)
-    # print(words)
+    # t = generate(words)
+    t = gen_test.gen("res.mp3", "res.txt", int(words), "en")
+    print(t)
     response = make_response(t, 200)
     response.mimetype = "text/plain"
     return response
@@ -34,9 +37,9 @@ def get_words():
 
 @app.route('/api/get_sound', methods=['GET'])
 def sendfile():
-    print("sendfile")
+    # print("sendfile")
     dirname = path.dirname(__file__)
-    res = path.join(dirname, 'result.mp3')
+    res = path.join(dirname, 'res.mp3')
     with open(res, 'rb') as f:
         res = f.read()
 
@@ -48,29 +51,22 @@ def sendfile():
 
 @app.route("/api/validate", methods=['POST'])
 def form():
-    print("validate sound")
+    # print("validate sound")
     files = request.files
     file = files.get('file')
     print(type(file))
     dirname = path.dirname(__file__)
-    res = path.join(dirname, 'to_validate.mp3')
+    res = path.join(dirname, 'to_validate.wav')
     with open(res, 'wb+') as f:
         # f.write(file.content)
         file.save(f)
+
+    tmp = rtfs.recognize('to_validate.wav', 'validation.txt', 'en')
+    print(tmp)
     resp = jsonify({"success": True, "response": "file saved!"})
     resp.headers.add('Access-Control-Allow-Origin', '*')
 
     return resp
-
-
-# @app.route('/upload_static_file', methods=['POST'])
-# def upload_static_file():
-#     print("Got request in static files")
-#     print(request.files)
-#     f = request.files['static_file']
-#     f.save(f.filename)
-#     resp = {"success": True, "response": "file saved!"}
-#     return jsonify(resp), 200
 
 
 def generate_testcase(n):

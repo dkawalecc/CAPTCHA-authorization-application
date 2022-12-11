@@ -22,7 +22,7 @@ body {
 main {
     width: 70vw;
     margin: 20vh auto;
-    height: 70vh;
+    /* height: 50vh; */
     background-color: #ccc;
     border-radius: 0.75em;
     display: flex;
@@ -209,7 +209,7 @@ button:active:enabled {
 canvas {
     width: 16em;
     height: 8em;
-    margin: 0 auto 1em;
+    margin: 1em auto 0;
     border: 2px solid #111;
 }
 
