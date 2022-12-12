@@ -30,7 +30,7 @@ def edit_distance(s1, s2):
     return tbl[i, j]
 
 
-def reposne_match_tescase(response, testcase):
+def response_match_tescase(response, testcase):
     tokens1 = response.split(' ')
     tokens2 = testcase.split(' ')
     if len(tokens1) != len(tokens2):
@@ -80,7 +80,7 @@ with open(RESPONSE_STRING_PATH, 'r', encoding='utf-8') as file:
 
 print(f'\rT: {testcase}                                 ')
 print(f'R: {response}')
-if reposne_match_tescase(response, testcase):
+if response_match_tescase(response, testcase):
     print('Success')
 else:
     print('Failure')

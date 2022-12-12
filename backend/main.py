@@ -1,5 +1,6 @@
 import string
 import librosa
+import soundfile as sf
 from gtts import gTTS
 from pydub import AudioSegment
 from pydub.playback import play
@@ -28,7 +29,7 @@ def get_words():
     # print("get_words")
     words = request.args.get('words', default=1, type=int)  # arg for generate()
     # t = generate(words)
-    t = gen_test.gen("res.mp3", "res.txt", int(words), "en")
+    t = gen_test.gen("res.mp3", "res.txt", int(words), "pl")
     print(t)
     response = make_response(t, 200)
     response.mimetype = "text/plain"
@@ -50,18 +51,22 @@ def sendfile():
 
 
 @app.route("/api/validate", methods=['POST'])
-def form():
+def validate():
     # print("validate sound")
     files = request.files
     file = files.get('file')
     print(type(file))
     dirname = path.dirname(__file__)
     res = path.join(dirname, 'to_validate.wav')
+    res1 = path.join(dirname, 'stereo_file.wav')
+
     with open(res, 'wb+') as f:
-        # f.write(file.content)
         file.save(f)
 
-    tmp = rtfs.recognize('to_validate.wav', 'validation.txt', 'en')
+    y, sr = librosa.load(res)
+    sf.write(res1, y, sr)
+
+    tmp = rtfs.recognize('stereo_file.wav', 'validation.txt', 'pl')
     print(tmp)
     resp = jsonify({"success": True, "response": "file saved!"})
     resp.headers.add('Access-Control-Allow-Origin', '*')

@@ -8,6 +8,7 @@ FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 24000
 
+
 def keyboard_hook(keyboard_event):
     global recording
     if keyboard_event.name == 'space' and keyboard_event.event_type == 'down':
