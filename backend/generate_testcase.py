@@ -5,6 +5,8 @@ from gtts import gTTS
 
 dirname = os.path.dirname(__file__)
 LANGUAGES_PATH = os.path.join(dirname, 'words')
+
+
 # LANGUAGES_PATH = 'words'
 
 def get_languages():
@@ -37,7 +39,6 @@ def gen(*argv):
     output_text_path = argv[1]
     output_text_path = os.path.join(dirname, output_text_path)
 
-
     # if not sys.argv[3].isnumeric():
     #     print(f'Thrid argument shall be a number')
     #     exit(-1)
@@ -52,7 +53,6 @@ def gen(*argv):
             language = 'pl'
     else:
         language = 'pl'
-
 
     testcase = generate_testcase(n, language)
     save_testcase(testcase, language, output_audio_path)

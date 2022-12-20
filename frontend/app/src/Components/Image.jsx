@@ -14,6 +14,7 @@ function Image(props) {
 
     useEffect(() => {
         const canvas = canvasRef.current;
+        canvas.height = 40 * props.wordCount - 5;
         const context = canvas.getContext("2d");
 
         draw(context, canvas.width, canvas.height);

@@ -28,8 +28,10 @@ SYMBOLS = string.ascii_uppercase + string.digits
 def get_words():
     # print("get_words")
     words = request.args.get('words', default=1, type=int)  # arg for generate()
+    lang = request.args.get('lang', default='en', type=str)
     # t = generate(words)
-    t = gen_test.gen("res.mp3", "res.txt", int(words), "pl")
+    print(lang)
+    t = gen_test.gen("res.mp3", "res.txt", int(words), lang)
     print(t)
     response = make_response(t, 200)
     response.mimetype = "text/plain"
@@ -53,6 +55,7 @@ def sendfile():
 @app.route("/api/validate", methods=['POST'])
 def validate():
     # print("validate sound")
+    lang = request.args.get('lang', default='en', type=str)
     files = request.files
     file = files.get('file')
     print(type(file))
@@ -66,9 +69,8 @@ def validate():
     y, sr = librosa.load(res)
     sf.write(res1, y, sr)
 
-    tmp = rtfs.recognize('stereo_file.wav', 'validation.txt', 'pl')
-    print(tmp)
-    resp = jsonify({"success": True, "response": "file saved!"})
+    tmp = rtfs.recognize('stereo_file.wav', 'validation.txt', lang)
+    resp = jsonify({"success": (tmp is not None), "response": "file saved!"})
     resp.headers.add('Access-Control-Allow-Origin', '*')
 
     return resp
