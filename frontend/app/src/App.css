@@ -23,7 +23,7 @@ body {
 }
 
 main {
-    width: 75vw;
+    width: 60vw;
     margin: 15vh auto;
     /* height: 50vh; */
     background-color: #fffcf7;
@@ -128,6 +128,7 @@ button:active:enabled {
     display: flex;
     flex-direction: column;
     margin: 0 auto 1em;
+    /* overflow-x: auto; */
 }
 
 .grid > span {

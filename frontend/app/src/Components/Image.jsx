@@ -20,7 +20,7 @@ function Image(props) {
         draw(context, canvas.width, canvas.height);
     });
 
-    return <canvas ref={canvasRef} {...props} />;
+    return <canvas ref={canvasRef} />;
 }
 
 export default Image;

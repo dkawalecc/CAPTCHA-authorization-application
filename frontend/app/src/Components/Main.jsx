@@ -15,14 +15,15 @@ function Main() {
     const [state, setState] = useState({
         sound: "",
         ctx: new AudioContext(),
-        wordCount: 3,
+        wordCount: 4,
         language: window.navigator.language.split("-")[0],
-        trials: 0,
         generating: false,
         playDisable: false,
         displayImage: false,
         checked: false,
     });
+
+    const [trials, setTrials] = useState(4);
 
     const [loading, setLoading] = useState({
         image: false,
@@ -78,8 +79,10 @@ function Main() {
                 setCaptcha({
                     ...captcha,
                     target: data
-                        .normalize("NFD")
+                        .replace(/\u0142/g, "l")
+                        .normalize("NFKD")
                         .replace(/[\u0300-\u036f]/g, ""),
+                    // .replace(/[^\w]/g, '')
                     wordLength: data.replace(/\s+/g, "").length,
                 });
                 console.log(data);
@@ -93,6 +96,7 @@ function Main() {
     async function getFile() {
         try {
             // debugger;
+
             setState({ ...state, generating: true, ctx: new AudioContext() });
 
             let status = await getWords().catch((e) => {
@@ -123,9 +127,8 @@ function Main() {
                 .then((decodedAudio) => {
                     // new (window.AudioContext || window.webkitAudioContext)()
                     audio = decodedAudio;
-                    setTimeout(() => {
-                        setState({ ...state, generating: false, sound: audio });
-                    }, 1);
+                    setState({ ...state, generating: false, sound: audio });
+                    setTrials(4);
                 });
         } catch (e) {
             console.error(e);
@@ -193,9 +196,35 @@ function Main() {
 
         function submitGuess() {
             const activeTiles = [...getActiveTiles()];
-            if (activeTiles.length < state.wordLength) {
-                showAlert("Not enough letters");
+            if (activeTiles.length < captcha.wordLength) {
+                // showAlert("Not enough letters");
+                toast.warn("Not enough letters", {
+                    position: "top-center",
+                    autoClose: 2500,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
                 shakeTiles(activeTiles);
+                setTrials((prev) => {
+                    if (prev === 1) {
+                        toast.error("Too many attempts, try again.", {
+                            position: "top-center",
+                            autoClose: 2500,
+                            hideProgressBar: true,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "dark",
+                        });
+                        getFile();
+                    }
+                    return prev - 1;
+                });
                 return;
             }
 
@@ -245,29 +274,56 @@ function Main() {
 
         function checkTarget(guess, tiles) {
             if (guess === captcha.target.replace(/\s+/g, "").toLowerCase()) {
-                showAlert("Correct!", 4000);
+                // showAlert("Correct!", 4000);
+                toast.success("Correct", {
+                    position: "top-center",
+                    autoClose: 2500,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: false,
+                    draggable: true,
+                    progress: undefined,
+                });
                 setTimeout(() => {
                     // problem with useNavigate
                     // navigate("/resource", { replace: true });
                     window.location = "/resource";
                 }, 2000);
+                setTrials(4);
 
                 return () => {
                     document.removeEventListener("keydown", handleKeyPress);
                     verifyBtn.removeEventListener("click", submitGuess);
                 };
             } else {
-                showAlert("Incorrect, generate new code or try again.", 4000);
-                toast.success("Questionnaire sent", {
+                // showAlert("Incorrect, generate new code or try again.", 4000);
+                toast.warn("Incorrect, generate new code or try again.", {
                     position: "top-center",
                     autoClose: 3000,
-                    hideProgressBar: false,
+                    hideProgressBar: true,
                     closeOnClick: true,
                     pauseOnHover: true,
                     draggable: true,
                     progress: undefined,
+                    theme: "dark",
                 });
                 shakeTiles(tiles);
+                setTrials((prev) => {
+                    if (prev === 1) {
+                        toast.error("Too many attempts, try again.", {
+                            position: "top-center",
+                            autoClose: 2500,
+                            hideProgressBar: true,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "dark",
+                        });
+                        getFile();
+                    }
+                    return prev - 1;
+                });
 
                 for (let tile of tiles) {
                     tile.textContent = "_";

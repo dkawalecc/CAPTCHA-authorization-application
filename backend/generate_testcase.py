@@ -2,10 +2,12 @@ import sys
 import os
 import numpy as np
 from gtts import gTTS
+import modify
+
 
 dirname = os.path.dirname(__file__)
 LANGUAGES_PATH = os.path.join(dirname, 'words')
-DEFAULT_LANGAUGE = 'en'
+DEFAULT_LANGUAGE = 'en'
 
 
 def get_languages():
@@ -15,6 +17,7 @@ def get_languages():
 def generate_testcase(n, min_length, max_length, language):
     with open(os.path.join(LANGUAGES_PATH, f'{language}.txt'), 'r', encoding='utf-8') as file:
         lines = file.readlines()
+
     if min_length != 0:
         if max_length != 0:
             lines = [line for line in lines if min_length <= len(line) - 1 <= max_length]
@@ -48,13 +51,13 @@ def gen(*argv):
     if len(argv) == 6:
         language = argv[5]
         if language not in get_languages():
-            language = DEFAULT_LANGAUGE
+            language = DEFAULT_LANGUAGE
     else:
-        language = DEFAULT_LANGAUGE
-
+        language = DEFAULT_LANGUAGE
 
     testcase = generate_testcase(n, min_length, max_length, language)
     save_testcase(testcase, language, output_audio_path)
+    modify.mod(86, output_audio_path)
     with open(output_text_path, 'w', encoding='utf-8') as file:
         file.write(testcase)
     return "".join(testcase)
