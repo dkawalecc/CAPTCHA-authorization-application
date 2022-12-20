@@ -38,7 +38,7 @@ def recognize(*argv):
 
     speech_recognition = r.recognize_google(audio_listened, key=API_KEY, language=language, show_all=True)
     if not speech_recognition:
-        exit(-1)
+        return None
     else:
         with open(output_path, 'w', encoding='utf-8') as file:
             file.write(speech_recognition['alternative'][0]['transcript'].lower())

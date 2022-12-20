@@ -1,9 +1,8 @@
 import { useRecorderPermission } from "../Hooks/useRecorderPermission";
 import React from "react";
-import RecordRTC from "recordrtc";
 import { useState } from "react";
 
-export const Recorder = ({ fileName }) => {
+export const Recorder = ({ lang, fileName }) => {
     const [recorder, tracks] = useRecorderPermission("audio");
     const [state, setState] = useState({
         recording: false,
@@ -25,31 +24,37 @@ export const Recorder = ({ fileName }) => {
 
         let data = new FormData();
         data.append("file", blob, "file");
-        await fetch("http://localhost:3333/api/validate", {
+        await fetch(`http://localhost:3333/api/validate?lang=${lang}`, {
             method: "POST",
             body: data,
         })
             .then((response) => response.json())
             .then((json) => {
+                setState({ ...state, recording: false });
+                console.log(json);
                 if (json.success) {
-                    console.log(json);
                     // window.location = "/resource";\
                     if (tracks !== undefined) {
                         tracks[0].stop();
                     }
+                } else {
+                    alert("Incorrect recording");
                 }
-                setState({ ...state, recording: false });
             });
     };
 
     return (
-        <div className="recording">
-            <button disabled={state.recording} onClick={startRecording}>
-                Start recording
-            </button>
-            <button disabled={!state.recording} onClick={stopRecording}>
-                Stop and send
-            </button>
-        </div>
+        <button
+            onClick={() => {
+                if (state.recording) {
+                    stopRecording();
+                } else {
+                    startRecording();
+                }
+            }}
+            className="record-btn"
+        >
+            {state.recording ? "Stop & verify" : "Record audio"}
+        </button>
     );
 };

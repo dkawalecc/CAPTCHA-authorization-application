@@ -7,6 +7,7 @@ dirname = os.path.dirname(__file__)
 LANGUAGES_PATH = os.path.join(dirname, 'words')
 DEFAULT_LANGAUGE = 'en'
 
+
 def get_languages():
     return [file.split('.')[0] for file in os.listdir(LANGUAGES_PATH)]
 
