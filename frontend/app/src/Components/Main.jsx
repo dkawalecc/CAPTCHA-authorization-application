@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import AlertContainer from "./AlertContainer";
-import { useEffect, useState, CSSProperties } from "react";
+import { useEffect, useState } from "react";
 import Button from "./Button";
 import Image from "./Image";
 import Tiles from "./Tiles";
@@ -23,8 +24,10 @@ function Main() {
         checked: false,
     });
 
+    // eslint-disable-next-line no-unused-vars
     const [trials, setTrials] = useState(4);
 
+    // eslint-disable-next-line no-unused-vars
     const [loading, setLoading] = useState({
         image: false,
     });
@@ -137,6 +140,7 @@ function Main() {
 
     useEffect(() => {
         getFile();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [state.language]);
 
     useEffect(() => {
@@ -150,7 +154,7 @@ function Main() {
 
     useEffect(() => {
         const guessGrid = document.querySelector(".grid");
-        const alertContainer = document.querySelector("[data-alert-container]");
+        // const alertContainer = document.querySelector("[data-alert-container]");
         const verifyBtn = document.querySelector(".verify-btn");
 
         // function startInteraction() {
@@ -245,19 +249,19 @@ function Main() {
             delete lastTile.dataset.letter;
         }
 
-        function showAlert(message, duration = 900) {
-            const alert = document.createElement("div");
-            alert.textContent = message;
-            alert.classList.add("alert");
-            alertContainer.prepend(alert);
-            if (duration == null) return;
-            setTimeout(() => {
-                alert.classList.add("hide");
-                alert.addEventListener("transitionend", () => {
-                    alert.remove();
-                });
-            }, duration);
-        }
+        // function showAlert(message, duration = 900) {
+        //     const alert = document.createElement("div");
+        //     alert.textContent = message;
+        //     alert.classList.add("alert");
+        //     alertContainer.prepend(alert);
+        //     if (duration == null) return;
+        //     setTimeout(() => {
+        //         alert.classList.add("hide");
+        //         alert.addEventListener("transitionend", () => {
+        //             alert.remove();
+        //         });
+        //     }, duration);
+        // }
 
         function shakeTiles(tiles) {
             tiles.forEach((tile) => {
@@ -337,6 +341,7 @@ function Main() {
             document.removeEventListener("keydown", handleKeyPress);
             verifyBtn.removeEventListener("click", submitGuess);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [captcha.target]);
 
     return (
