@@ -1,0 +1,6 @@
+Flask
+gTTS
+librosa
+soundfile
+numpy
+SpeechRecognition
