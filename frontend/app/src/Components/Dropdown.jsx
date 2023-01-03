@@ -59,7 +59,7 @@ export default function Dropdown({ langHandler, lang }) {
 
     return (
         <div className="dropdown-container">
-            <div className="dropdown-input">
+            <div className="dropdown-input" tabIndex={0}>
                 <div className="dropdown-selected-value">
                     <img
                         alt="en"

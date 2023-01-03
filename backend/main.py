@@ -31,7 +31,7 @@ def get_words():
     lang = request.args.get('lang', default='en', type=str)
     # t = generate(words)
     print(lang)
-    t = gen_test.gen("res.mp3", "res.txt", int(words), lang)
+    t = gen_test.gen("res.wav", "res.txt", int(words), 4, 10, lang)
     print(t)
     response = make_response(t, 200)
     response.mimetype = "text/plain"
@@ -42,7 +42,7 @@ def get_words():
 def sendfile():
     # print("sendfile")
     dirname = path.dirname(__file__)
-    res = path.join(dirname, 'res.mp3')
+    res = path.join(dirname, 'modified_res.wav')
     with open(res, 'rb') as f:
         res = f.read()
 

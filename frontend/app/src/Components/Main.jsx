@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import AlertContainer from "./AlertContainer";
-import { useEffect, useState, CSSProperties } from "react";
+import { useEffect, useState } from "react";
 import Button from "./Button";
 import Image from "./Image";
 import Tiles from "./Tiles";
@@ -15,15 +16,18 @@ function Main() {
     const [state, setState] = useState({
         sound: "",
         ctx: new AudioContext(),
-        wordCount: 3,
+        wordCount: 4,
         language: window.navigator.language.split("-")[0],
-        trials: 0,
         generating: false,
         playDisable: false,
         displayImage: false,
         checked: false,
     });
 
+    // eslint-disable-next-line no-unused-vars
+    const [trials, setTrials] = useState(4);
+
+    // eslint-disable-next-line no-unused-vars
     const [loading, setLoading] = useState({
         image: false,
     });
@@ -78,8 +82,10 @@ function Main() {
                 setCaptcha({
                     ...captcha,
                     target: data
-                        .normalize("NFD")
+                        .replace(/\u0142/g, "l")
+                        .normalize("NFKD")
                         .replace(/[\u0300-\u036f]/g, ""),
+                    // .replace(/[^\w]/g, '')
                     wordLength: data.replace(/\s+/g, "").length,
                 });
                 console.log(data);
@@ -93,6 +99,7 @@ function Main() {
     async function getFile() {
         try {
             // debugger;
+
             setState({ ...state, generating: true, ctx: new AudioContext() });
 
             let status = await getWords().catch((e) => {
@@ -123,9 +130,8 @@ function Main() {
                 .then((decodedAudio) => {
                     // new (window.AudioContext || window.webkitAudioContext)()
                     audio = decodedAudio;
-                    setTimeout(() => {
-                        setState({ ...state, generating: false, sound: audio });
-                    }, 1);
+                    setState({ ...state, generating: false, sound: audio });
+                    setTrials(4);
                 });
         } catch (e) {
             console.error(e);
@@ -134,6 +140,7 @@ function Main() {
 
     useEffect(() => {
         getFile();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [state.language]);
 
     useEffect(() => {
@@ -147,7 +154,7 @@ function Main() {
 
     useEffect(() => {
         const guessGrid = document.querySelector(".grid");
-        const alertContainer = document.querySelector("[data-alert-container]");
+        // const alertContainer = document.querySelector("[data-alert-container]");
         const verifyBtn = document.querySelector(".verify-btn");
 
         // function startInteraction() {
@@ -193,9 +200,35 @@ function Main() {
 
         function submitGuess() {
             const activeTiles = [...getActiveTiles()];
-            if (activeTiles.length < state.wordLength) {
-                showAlert("Not enough letters");
+            if (activeTiles.length < captcha.wordLength) {
+                // showAlert("Not enough letters");
+                toast.warn("Not enough letters", {
+                    position: "top-center",
+                    autoClose: 2500,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
                 shakeTiles(activeTiles);
+                setTrials((prev) => {
+                    if (prev === 1) {
+                        toast.error("Too many attempts, try again.", {
+                            position: "top-center",
+                            autoClose: 2500,
+                            hideProgressBar: true,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "dark",
+                        });
+                        getFile();
+                    }
+                    return prev - 1;
+                });
                 return;
             }
 
@@ -216,19 +249,19 @@ function Main() {
             delete lastTile.dataset.letter;
         }
 
-        function showAlert(message, duration = 900) {
-            const alert = document.createElement("div");
-            alert.textContent = message;
-            alert.classList.add("alert");
-            alertContainer.prepend(alert);
-            if (duration == null) return;
-            setTimeout(() => {
-                alert.classList.add("hide");
-                alert.addEventListener("transitionend", () => {
-                    alert.remove();
-                });
-            }, duration);
-        }
+        // function showAlert(message, duration = 900) {
+        //     const alert = document.createElement("div");
+        //     alert.textContent = message;
+        //     alert.classList.add("alert");
+        //     alertContainer.prepend(alert);
+        //     if (duration == null) return;
+        //     setTimeout(() => {
+        //         alert.classList.add("hide");
+        //         alert.addEventListener("transitionend", () => {
+        //             alert.remove();
+        //         });
+        //     }, duration);
+        // }
 
         function shakeTiles(tiles) {
             tiles.forEach((tile) => {
@@ -245,29 +278,56 @@ function Main() {
 
         function checkTarget(guess, tiles) {
             if (guess === captcha.target.replace(/\s+/g, "").toLowerCase()) {
-                showAlert("Correct!", 4000);
+                // showAlert("Correct!", 4000);
+                toast.success("Correct", {
+                    position: "top-center",
+                    autoClose: 2500,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: false,
+                    draggable: true,
+                    progress: undefined,
+                });
                 setTimeout(() => {
                     // problem with useNavigate
                     // navigate("/resource", { replace: true });
                     window.location = "/resource";
                 }, 2000);
+                setTrials(4);
 
                 return () => {
                     document.removeEventListener("keydown", handleKeyPress);
                     verifyBtn.removeEventListener("click", submitGuess);
                 };
             } else {
-                showAlert("Incorrect, generate new code or try again.", 4000);
-                toast.success("Questionnaire sent", {
+                // showAlert("Incorrect, generate new code or try again.", 4000);
+                toast.warn("Incorrect, generate new code or try again.", {
                     position: "top-center",
                     autoClose: 3000,
-                    hideProgressBar: false,
+                    hideProgressBar: true,
                     closeOnClick: true,
                     pauseOnHover: true,
                     draggable: true,
                     progress: undefined,
+                    theme: "dark",
                 });
                 shakeTiles(tiles);
+                setTrials((prev) => {
+                    if (prev === 1) {
+                        toast.error("Too many attempts, try again.", {
+                            position: "top-center",
+                            autoClose: 2500,
+                            hideProgressBar: true,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "dark",
+                        });
+                        getFile();
+                    }
+                    return prev - 1;
+                });
 
                 for (let tile of tiles) {
                     tile.textContent = "_";
@@ -281,6 +341,7 @@ function Main() {
             document.removeEventListener("keydown", handleKeyPress);
             verifyBtn.removeEventListener("click", submitGuess);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [captcha.target]);
 
     return (
@@ -327,7 +388,12 @@ function Main() {
                                 viewBox="0 0 24 24"
                                 fill="none"
                                 xmlns="http://www.w3.org/2000/svg"
+                                aria-labelledby="generate-title"
+                                role="img"
                             >
+                                <title id="generate-title">
+                                    Generate new Captcha
+                                </title>
                                 <path
                                     d="M13.1459 11.0499L12.9716 9.05752L15.3462 8.84977C14.4471 7.98322 13.2242 7.4503 11.8769 7.4503C9.11547 7.4503 6.87689 9.68888 6.87689 12.4503C6.87689 15.2117 9.11547 17.4503 11.8769 17.4503C13.6977 17.4503 15.2911 16.4771 16.1654 15.0224L18.1682 15.5231C17.0301 17.8487 14.6405 19.4503 11.8769 19.4503C8.0109 19.4503 4.87689 16.3163 4.87689 12.4503C4.87689 8.58431 8.0109 5.4503 11.8769 5.4503C13.8233 5.4503 15.5842 6.24474 16.853 7.52706L16.6078 4.72412L18.6002 4.5498L19.1231 10.527L13.1459 11.0499Z"
                                     fill="currentColor"

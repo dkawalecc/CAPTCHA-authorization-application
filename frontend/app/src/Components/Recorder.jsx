@@ -33,7 +33,7 @@ export const Recorder = ({ lang, fileName }) => {
                 setState({ ...state, recording: false });
                 console.log(json);
                 if (json.success) {
-                    // window.location = "/resource";\
+                    window.location = "/resource";
                     if (tracks !== undefined) {
                         tracks[0].stop();
                     }
