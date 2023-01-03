@@ -2,13 +2,9 @@ import string
 import librosa
 import soundfile as sf
 from gtts import gTTS
-from pydub import AudioSegment
-from pydub.playback import play
 from os import listdir, path
 from os.path import isfile, join, abspath
 import random
-from pydub.generators import WhiteNoise
-from pydub.generators import Sine
 from flask import Flask, request, render_template, jsonify, send_file, make_response, Response
 from flask_cors import CORS
 import requests

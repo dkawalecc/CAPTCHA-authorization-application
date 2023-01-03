@@ -1,7 +1,6 @@
 import librosa
 import numpy as np
 import soundfile as sf
-from playsound import playsound
 import os
 
 # adds sine wave distortion to a given signal
@@ -62,4 +61,3 @@ def mod(DIFFICULTY=100, audio_path='testcase.wav'):
     y = random_speed_change(y, DIFFICULTY / 300.0)
 
     sf.write(modified, y, sr)
-    # playsound(modified)

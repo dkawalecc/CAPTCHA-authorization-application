@@ -4,3 +4,4 @@ librosa
 soundfile
 numpy
 SpeechRecognition
+flask_cors
